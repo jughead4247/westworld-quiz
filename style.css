@@ -691,20 +691,41 @@ h2 {
 }
 
 
-/* FOOTER */
+/* ===============================
+   FOOTER
+   =============================== */
 
 .site-footer {
-    width: 100%;
+    margin-top: 0;
 
-    max-width: 760px;
+    padding: 50px 20px 35px;
 
-    margin-top: 20px;
+    background: #080808;
 
-    padding: 10px;
+    color: #ffffff;
 
-    font-size: 12px;
+    border-top: 1px solid #292929;
 }
 
+.footer-inner {
+    width: min(100%, 1100px);
+
+    margin: auto;
+
+    text-align: center;
+}
+
+.footer-brand {
+    margin-bottom: 24px;
+
+    color: #ffffff;
+
+    font-size: 1.15rem;
+
+    font-weight: 800;
+
+    letter-spacing: 0.5px;
+}
 
 .footer-links {
     display: flex;
@@ -713,34 +734,36 @@ h2 {
 
     flex-wrap: wrap;
 
-    gap: 18px;
+    gap: 10px 24px;
+
+    margin-bottom: 26px;
 }
 
-
-.site-footer a {
-    color: #777;
+.footer-links a {
+    color: #dddddd;
 
     text-decoration: none;
+
+    font-size: 0.92rem;
+
+    font-weight: 600;
+
+    transition: color 0.2s ease;
 }
 
-
-.site-footer a:hover {
-    color: #ccc;
+.footer-links a:hover {
+    color: #ffffff;
 
     text-decoration: underline;
 }
 
-
 .copyright {
     margin-top: 12px;
 
-    text-align: center;
+    color: #999999;
 
-    color: #555;
-
-    font-size: 11px;
+    font-size: 0.8rem;
 }
-
 
 /* INFORMATION PAGES */
 
