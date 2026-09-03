@@ -602,6 +602,18 @@ const questions = [
 
 ];
 
+// Shuffle answer options randomly
+function shuffleAnswers() {
+    questions.forEach(question => {
+        for (let i = question.answers.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+
+            [question.answers[i], question.answers[j]] =
+            [question.answers[j], question.answers[i]];
+        }
+    });
+}
+
 let currentQuestion = 0;
 
 let selectedAnswers =
@@ -693,6 +705,7 @@ nextButton.addEventListener(
 
 function startQuiz() {
 
+    shuffleAnswers();
     currentQuestion = 0;
 
     selectedAnswers =
