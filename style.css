@@ -222,17 +222,16 @@ body{
 
     display:flex;
     flex-direction:column;
-    justify-content:center;
-    align-items:center;
 
-    padding:20px;
+    padding: 0;
 }
 
 /* MAIN CONTAINER */
 
 .container {
-    width: 100%;
-    max-width: 760px;
+    width: min(100% - 32px, 760px);
+
+    margin: 20px auto;
 
     position: relative;
     z-index: 1;
