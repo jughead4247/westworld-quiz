@@ -11,9 +11,9 @@
 
     width: 100%;
 
-    min-height: 72px;
+    min-height: 100px;
 
-    padding: 12px 60px;
+    padding: 40px 60px;
 
     background: #080808;
 
@@ -680,7 +680,7 @@ h2 {
 .site-footer {
     width: 100%;
     margin-top: auto;
-    padding: 50px 20px 35px;
+    padding: 10px 20px;
 
     background: #080808;
     color: #ffffff;
