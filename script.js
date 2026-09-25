@@ -602,72 +602,73 @@ const questions = [
 
 ];
 
-// Shuffle answer options randomly
-function shuffleAnswers() {
-    questions.forEach(question => {
-        for (let i = question.answers.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
 
-            [question.answers[i], question.answers[j]] =
-            [question.answers[j], question.answers[i]];
-        }
-    });
-}
+// =====================================================
+// QUIZ STATE
+// =====================================================
 
 let currentQuestion = 0;
 
 let selectedAnswers =
     new Array(questions.length).fill(null);
 
-// ===============================
+
+// =====================================================
 // ELEMENTS
-// ===============================
+// =====================================================
 
 const startScreen =
-document.getElementById("start-screen");
+    document.getElementById("start-screen");
 
 const quizScreen =
-document.getElementById("quiz-screen");
+    document.getElementById("quiz-screen");
 
 const resultScreen =
-document.getElementById("result-screen");
+    document.getElementById("result-screen");
 
 const homeInfo =
-document.getElementById("home-info");
+    document.getElementById("home-info");
 
 const startButton =
-document.getElementById("start-btn");
+    document.getElementById("start-btn");
 
 const restartButton =
-document.getElementById("restart-btn");
+    document.getElementById("restart-btn");
 
 const shareButton =
-document.getElementById("share-btn");
+    document.getElementById("share-btn");
 
 const challengeButton =
-document.getElementById("challenge-btn");
+    document.getElementById("challenge-btn");
 
 const backButton =
-document.getElementById("back-btn");
+    document.getElementById("back-btn");
 
 const nextButton =
-document.getElementById("next-btn");
+    document.getElementById("next-btn");
+
+const submitButton =
+    document.getElementById("submit-btn");
 
 const questionNumber =
-document.getElementById("question-number");
+    document.getElementById("question-number");
 
 const questionText =
-document.getElementById("question");
+    document.getElementById("question");
 
 const answersContainer =
-document.getElementById("answers");
+    document.getElementById("answers");
 
 const progressBar =
-document.getElementById("progress-bar");
+    document.getElementById("progress-bar");
 
-// ===============================
+const suggestionsCard =
+    document.getElementById("suggestions-card");
+
+
+// =====================================================
 // BUTTON EVENTS
-// ===============================
+// =====================================================
 
 startButton.addEventListener(
     "click",
@@ -699,17 +700,60 @@ nextButton.addEventListener(
     goNext
 );
 
-// ===============================
+submitButton.addEventListener(
+    "click",
+    showResult
+);
+
+
+// =====================================================
+// SHUFFLE ANSWERS
+// =====================================================
+
+function shuffleAnswers() {
+
+    questions.forEach(question => {
+
+        for (
+            let i = question.answers.length - 1;
+            i > 0;
+            i--
+        ) {
+
+            const j =
+                Math.floor(
+                    Math.random() * (i + 1)
+                );
+
+            [
+                question.answers[i],
+                question.answers[j]
+            ] =
+            [
+                question.answers[j],
+                question.answers[i]
+            ];
+
+        }
+
+    });
+
+}
+
+
+// =====================================================
 // START QUIZ
-// ===============================
+// =====================================================
 
 function startQuiz() {
 
     shuffleAnswers();
+
     currentQuestion = 0;
 
     selectedAnswers =
         new Array(questions.length).fill(null);
+
 
     startScreen.classList.add("hidden");
 
@@ -719,32 +763,53 @@ function startQuiz() {
 
     homeInfo.classList.add("hidden");
 
+
+    if (suggestionsCard) {
+        suggestionsCard.classList.add("hidden");
+    }
+
+
+    progressBar.style.width = "0%";
+
     showQuestion();
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
 }
 
-// ===============================
+
+// =====================================================
 // SHOW QUESTION
-// ===============================
+// =====================================================
 
 function showQuestion() {
 
     const current =
         questions[currentQuestion];
 
+
     questionNumber.textContent =
         `Question ${currentQuestion + 1} of ${questions.length}`;
+
 
     questionText.textContent =
         current.question;
 
+
     answersContainer.innerHTML = "";
+
 
     const progress =
         ((currentQuestion + 1) /
             questions.length) * 100;
 
+
     progressBar.style.width =
         `${progress}%`;
+
 
     current.answers.forEach(
         (answer, index) => {
@@ -752,40 +817,29 @@ function showQuestion() {
             const button =
                 document.createElement("button");
 
+
             button.className =
                 "answer";
+
 
             button.type =
                 "button";
 
+
             button.textContent =
                 answer[0];
 
+
             if (
-                selectedAnswers[
-                    currentQuestion
-                ] === index
+                selectedAnswers[currentQuestion] === index
             ) {
 
                 button.classList.add(
                     "selected"
                 );
 
-                button.style.backgroundColor =
-                    "#444";
-
-                button.style.borderColor =
-                    "#ffffff";
-
-                button.style.color =
-                    "#ffffff";
-
-                button.style.fontWeight =
-                    "700";
-
-                button.style.boxShadow =
-                    "0 0 0 2px rgba(255,255,255,0.25)";
             }
+
 
             button.addEventListener(
                 "click",
@@ -796,6 +850,7 @@ function showQuestion() {
                 }
             );
 
+
             answersContainer.appendChild(
                 button
             );
@@ -803,113 +858,89 @@ function showQuestion() {
         }
     );
 
+
     updateNavigation();
+
 }
 
-// ===============================
+
+// =====================================================
 // SELECT ANSWER
-// ===============================
+// =====================================================
 
 function selectAnswer(answerIndex) {
 
     selectedAnswers[currentQuestion] =
         answerIndex;
 
+
     const buttons =
         answersContainer.querySelectorAll(
             ".answer"
         );
 
+
     buttons.forEach(
         (button, index) => {
 
-            if (index === answerIndex) {
-
-                button.classList.add(
-                    "selected"
-                );
-
-                button.style.backgroundColor =
-                    "#444";
-
-                button.style.borderColor =
-                    "#ffffff";
-
-                button.style.color =
-                    "#ffffff";
-
-                button.style.fontWeight =
-                    "700";
-
-                button.style.boxShadow =
-                    "0 0 0 2px rgba(255,255,255,0.25)";
-
-            } else {
-
-                button.classList.remove(
-                    "selected"
-                );
-
-                button.style.backgroundColor =
-                    "";
-
-                button.style.borderColor =
-                    "";
-
-                button.style.color =
-                    "";
-
-                button.style.fontWeight =
-                    "";
-
-                button.style.boxShadow =
-                    "";
-
-            }
+            button.classList.toggle(
+                "selected",
+                index === answerIndex
+            );
 
         }
     );
 
+
     updateNavigation();
 
-    if (
-        currentQuestion <
-        questions.length - 1
-    ) {
 
-        const questionAtSelection =
-            currentQuestion;
+    const questionAtSelection =
+        currentQuestion;
 
-        setTimeout(
-            () => {
 
-                if (
-                    currentQuestion ===
-                        questionAtSelection &&
+    setTimeout(
+        () => {
 
-                    selectedAnswers[
-                        questionAtSelection
-                    ] === answerIndex
-                ) {
+            if (
+                currentQuestion ===
+                    questionAtSelection &&
 
-                    currentQuestion++;
+                selectedAnswers[
+                    questionAtSelection
+                ] === answerIndex &&
 
-                    showQuestion();
+                currentQuestion <
+                    questions.length - 1
+            ) {
 
-                }
+                currentQuestion++;
 
-            },
-            150
-        );
+                showQuestion();
 
-    }
+            }
+
+        },
+        180
+    );
+
 }
 
-// ===============================
+
+// =====================================================
 // NEXT BUTTON
-// ===============================
+// =====================================================
 
 function goNext() {
+
+    if (
+        selectedAnswers[currentQuestion] === null
+    ) {
+
+        return;
+
+    }
+
 
     if (
         currentQuestion ===
@@ -921,33 +952,29 @@ function goNext() {
                 answer => answer !== null
             );
 
+
         if (allAnswered) {
 
             showResult();
 
         }
 
-        return;
-    }
-
-    if (
-        selectedAnswers[
-            currentQuestion
-        ] === null
-    ) {
 
         return;
 
     }
+
 
     currentQuestion++;
 
     showQuestion();
+
 }
 
-// ===============================
+
+// =====================================================
 // BACK BUTTON
-// ===============================
+// =====================================================
 
 function goBack() {
 
@@ -958,57 +985,61 @@ function goBack() {
         showQuestion();
 
     }
+
 }
 
-// ===============================
+
+// =====================================================
 // NAVIGATION
-// ===============================
+// =====================================================
 
 function updateNavigation() {
 
     const isFirst =
         currentQuestion === 0;
 
+
     const isLast =
         currentQuestion ===
         questions.length - 1;
+
 
     const currentAnswered =
         selectedAnswers[
             currentQuestion
         ] !== null;
 
+
     const allAnswered =
         selectedAnswers.every(
             answer => answer !== null
         );
 
+
     backButton.disabled =
         isFirst;
 
+
     if (isLast) {
 
-        nextButton.textContent =
-            "SUBMIT";
+        nextButton.classList.add("hidden");
 
-        nextButton.disabled =
+        submitButton.classList.remove("hidden");
+
+        submitButton.disabled =
             !allAnswered;
 
-        if (allAnswered) {
 
-            nextButton.classList.add(
-                "submit-ready"
-            );
-
-        } else {
-
-            nextButton.classList.remove(
-                "submit-ready"
-            );
-
-        }
+        submitButton.textContent =
+            allAnswered
+                ? "SUBMIT"
+                : "Answer All Questions";
 
     } else {
+
+        nextButton.classList.remove("hidden");
+
+        submitButton.classList.add("hidden");
 
         nextButton.textContent =
             "Next →";
@@ -1016,29 +1047,27 @@ function updateNavigation() {
         nextButton.disabled =
             !currentAnswered;
 
-        nextButton.classList.remove(
-            "submit-ready"
-        );
-
     }
+
 }
 
-// ===============================
+
+// =====================================================
 // CALCULATE SCORE
-// ===============================
+// =====================================================
 
 function calculateScore() {
 
     let correctAnswers = 0;
 
+
     selectedAnswers.forEach(
         (answerIndex, questionIndex) => {
 
             if (answerIndex === null) {
-
                 return;
-
             }
+
 
             correctAnswers +=
                 questions[
@@ -1050,54 +1079,109 @@ function calculateScore() {
         }
     );
 
-    /*
-        60 questions = 60 points maximum.
 
-        Convert the score to a percentage:
-        60 correct = 100
-        30 correct = 50
-        45 correct = 75
-    */
+    return correctAnswers;
+
+}
+
+
+// =====================================================
+// SHOW RESULT
+// =====================================================
+
+function showResult() {
+
+    const correctAnswers =
+        calculateScore();
+
+
+    const totalQuestions =
+        questions.length;
+
+
+    const incorrectAnswers =
+        totalQuestions -
+        correctAnswers;
+
 
     const score =
         Math.round(
             (correctAnswers /
-                questions.length) * 100
+                totalQuestions) * 100
         );
 
-    return score;
-}
 
-// ===============================
-// SHOW RESULT
-// ===============================
+    const accuracy =
+        score;
 
-function showResult() {
 
-    const score =
-        calculateScore();
-
-    homeInfo.classList.add(
+    homeInfo.classList.remove(
         "hidden"
     );
+
 
     quizScreen.classList.add(
         "hidden"
     );
 
+
     resultScreen.classList.remove(
         "hidden"
     );
+
+
+    if (suggestionsCard) {
+
+        suggestionsCard.classList.remove(
+            "hidden"
+        );
+
+    }
+
+
+    // =================================================
+    // RESULT BREAKDOWN
+    // =================================================
 
     document.getElementById(
         "final-score"
     ).textContent =
         score;
 
+
+    document.getElementById(
+        "correct-count"
+    ).textContent =
+        correctAnswers;
+
+
+    document.getElementById(
+        "incorrect-count"
+    ).textContent =
+        incorrectAnswers;
+
+
+    document.getElementById(
+        "total-count"
+    ).textContent =
+        totalQuestions;
+
+
+    document.getElementById(
+        "accuracy-percent"
+    ).textContent =
+        `${accuracy}%`;
+
+
+    // =================================================
+    // RESULT LEVEL
+    // =================================================
+
     let title;
     let description;
     let knowledge;
     let icon;
+
 
     if (score <= 20) {
 
@@ -1113,7 +1197,9 @@ function showResult() {
         icon =
             "🤖";
 
-    } else if (score <= 40) {
+    }
+
+    else if (score <= 40) {
 
         title =
             "🐎 Sweetwater Visitor";
@@ -1127,7 +1213,9 @@ function showResult() {
         icon =
             "🐎";
 
-    } else if (score <= 60) {
+    }
+
+    else if (score <= 60) {
 
         title =
             "🔫 Westworld Survivor";
@@ -1141,7 +1229,9 @@ function showResult() {
         icon =
             "🔫";
 
-    } else if (score <= 80) {
+    }
+
+    else if (score <= 80) {
 
         title =
             "🧠 Seasoned Host Hunter";
@@ -1155,7 +1245,9 @@ function showResult() {
         icon =
             "🧠";
 
-    } else if (score <= 94) {
+    }
+
+    else if (score <= 94) {
 
         title =
             "🤠 Westworld Expert";
@@ -1169,7 +1261,9 @@ function showResult() {
         icon =
             "🤠";
 
-    } else {
+    }
+
+    else {
 
         title =
             "🧬 Westworld Encyclopedia";
@@ -1185,35 +1279,34 @@ function showResult() {
 
     }
 
+
     document.getElementById(
         "result-title"
     ).textContent =
         title;
+
 
     document.getElementById(
         "result-description"
     ).textContent =
         description;
 
+
     document.getElementById(
         "knowledge-level"
     ).textContent =
         knowledge;
 
-    const resultIcon =
-        document.getElementById(
-            "result-icon"
-        );
 
-    if (resultIcon) {
+    document.getElementById(
+        "result-icon"
+    ).textContent =
+        icon;
 
-        resultIcon.textContent =
-            icon;
-
-    }
 
     progressBar.style.width =
         "100%";
+
 
     window.scrollTo({
 
@@ -1222,37 +1315,55 @@ function showResult() {
         behavior: "smooth"
 
     });
+
 }
 
-// ===============================
+
+// =====================================================
 // RESTART QUIZ
-// ===============================
+// =====================================================
 
 function restartQuiz() {
 
     currentQuestion = 0;
 
+
     selectedAnswers =
         new Array(questions.length).fill(null);
+
 
     resultScreen.classList.add(
         "hidden"
     );
 
+
     quizScreen.classList.add(
         "hidden"
     );
+
 
     startScreen.classList.remove(
         "hidden"
     );
 
+
     homeInfo.classList.remove(
         "hidden"
     );
 
+
+    if (suggestionsCard) {
+
+        suggestionsCard.classList.add(
+            "hidden"
+        );
+
+    }
+
+
     progressBar.style.width =
         "0%";
+
 
     window.scrollTo({
 
@@ -1261,11 +1372,13 @@ function restartQuiz() {
         behavior: "smooth"
 
     });
+
 }
 
-// ===============================
+
+// =====================================================
 // SHARE RESULT
-// ===============================
+// =====================================================
 
 async function shareResult() {
 
@@ -1274,21 +1387,29 @@ async function shareResult() {
             "result-title"
         ).textContent;
 
+
     const knowledge =
         document.getElementById(
             "knowledge-level"
         ).textContent;
+
 
     const finalScore =
         document.getElementById(
             "final-score"
         ).textContent;
 
+
+    const quizUrl =
+        "https://apocalypsequizzes.com/westworld-quiz/";
+
+
     const shareText =
         `🤠 I scored ${finalScore}/100 on the Westworld Quiz!\n\n` +
         `${title}\n` +
         `Knowledge level: ${knowledge}\n\n` +
         `How well do YOU know Westworld?`;
+
 
     const shareData = {
 
@@ -1299,9 +1420,10 @@ async function shareResult() {
             shareText,
 
         url:
-            "https://apocalypsequizzes.com/westworld-quiz/"
+            quizUrl
 
     };
+
 
     try {
 
@@ -1311,12 +1433,16 @@ async function shareResult() {
                 shareData
             );
 
-        } else {
+        }
+
+        else {
 
             await navigator.clipboard.writeText(
                 shareText +
-                "\n\nhttps://apocalypsequizzes.com/westworld-quiz/"
+                "\n\n" +
+                quizUrl
             );
+
 
             alert(
                 "Your result has been copied! You can paste it anywhere."
@@ -1324,36 +1450,55 @@ async function shareResult() {
 
         }
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
         console.log(
             "Sharing cancelled."
         );
 
     }
+
 }
 
-// ===============================
+
+// =====================================================
 // GLOBAL SITE MENU
-// ===============================
+// =====================================================
 
 const menuToggle =
-    document.getElementById("menu-toggle");
+    document.getElementById(
+        "menu-toggle"
+    );
+
 
 const siteMenu =
-    document.getElementById("site-menu");
+    document.getElementById(
+        "site-menu"
+    );
 
 
 if (menuToggle && siteMenu) {
 
+
+    // OPEN / CLOSE WITH HAMBURGER
+
     menuToggle.addEventListener(
         "click",
-        function () {
+        function (event) {
+
+            event.stopPropagation();
+
 
             const isOpen =
                 menuToggle.getAttribute(
                     "aria-expanded"
                 ) === "true";
+
+
+            siteMenu.hidden =
+                isOpen;
 
 
             menuToggle.setAttribute(
@@ -1369,65 +1514,64 @@ if (menuToggle && siteMenu) {
                     : "Close navigation"
             );
 
-
-            siteMenu.hidden =
-                isOpen;
-
         }
     );
 
 
-    siteMenu.querySelectorAll("a").forEach(
-        function (link) {
+    // CLOSE AFTER CLICKING A MENU LINK
 
-            link.addEventListener(
-                "click",
-                function () {
+    siteMenu
+        .querySelectorAll("a")
+        .forEach(
+            function (link) {
 
-                    menuToggle.setAttribute(
-                        "aria-expanded",
-                        "false"
-                    );
+                link.addEventListener(
+                    "click",
+                    function () {
 
-                    menuToggle.setAttribute(
-                        "aria-label",
-                        "Open navigation"
-                    );
+                        siteMenu.hidden =
+                            true;
 
-                    siteMenu.hidden =
-                        true;
 
-                }
-            );
+                        menuToggle.setAttribute(
+                            "aria-expanded",
+                            "false"
+                        );
 
-        }
-    );
 
+                        menuToggle.setAttribute(
+                            "aria-label",
+                            "Open navigation"
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+    // CLOSE WHEN CLICKING OUTSIDE
 
     document.addEventListener(
         "click",
         function (event) {
 
-            const clickedInsideMenu =
-                siteMenu.contains(event.target);
-
-            const clickedToggle =
-                menuToggle.contains(event.target);
-
-
             if (
-                !clickedInsideMenu &&
-                !clickedToggle &&
-                !siteMenu.hidden
+                !siteMenu.hidden &&
+                !siteMenu.contains(event.target) &&
+                !menuToggle.contains(event.target)
             ) {
 
                 siteMenu.hidden =
                     true;
 
+
                 menuToggle.setAttribute(
                     "aria-expanded",
                     "false"
                 );
+
 
                 menuToggle.setAttribute(
                     "aria-label",
